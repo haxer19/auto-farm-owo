@@ -166,7 +166,7 @@ async def startowo(ctx):
     start_time=time.time()
     def n_cmd(farm_count, last_command, now, last_pray_time):
         base_cmds = ["owo hunt", "owo battle"]
-        if now - last_pray_time > 600:
+        if now - last_pray_time>320:
             base_cmds.append("owo pray")
 
         if farm_count % 5 == 0:
@@ -174,7 +174,7 @@ async def startowo(ctx):
         if farm_count % 20 == 0:
             base_cmds.append("owo roll")
         if random.random() < 0.1:
-            base_cmds += ["owo kill <@408785106942164992>","owo punch <@408785106942164992>","owo hug <@408785106942164992>"]
+            base_cmds += ["owo dance","owo cry","owo zoo"]
 
         if last_command in base_cmds and len(base_cmds)>1:
             base_cmds.remove(last_command)
@@ -187,12 +187,6 @@ async def startowo(ctx):
             return time.time()
         return start_time
 
-    async def xamm(ctx):
-        if random.random() < 0.08:
-            sus_cmd = random.choice(["owo zoo", "owo cry", "owo dance"])
-            await ctx.send(sus_cmd)
-            await asyncio.sleep(random.uniform(2.0, 4.0))
-
     while running:
         try:
             now = time.time()
@@ -202,7 +196,6 @@ async def startowo(ctx):
                 lasst_check = now
 
             start_time=await auto_rest(start_time)
-            await xamm(ctx)
             command = n_cmd(farm_count,last_command,now,last_pray_time)
             #while command==last_command: command=n_cmd(farm_count)
             last_command=command
