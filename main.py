@@ -87,7 +87,6 @@ async def help(ctx):
 running=False
 lasst_check=0
 gem_used=0
-last_pray_time = 0
 
 async def parse_gems(inventory_message):
     rarity_order = ['f', 'l', 'm', 'e', 'r', 'u', 'c']
@@ -164,18 +163,15 @@ async def startowo(ctx):
     last_command=None
     farm_count=0
     start_time=time.time()
-    def n_cmd(farm_count, last_command, now, last_pray_time):
-        base_cmds = ["owo hunt", "owo battle"]
-        if now - last_pray_time>320:
-            base_cmds.append("owo pray")
-
+    def n_cmd(farm_count):
+        base_cmds = ["owo hunt","owo battle","owo pray"]
         if farm_count % 5 == 0:
             base_cmds.append("owo sell all")
         if farm_count % 20 == 0:
             base_cmds.append("owo roll")
         if random.random() < 0.1:
-            base_cmds += ["owo dance","owo cry","owo zoo"]
-
+            base_cmds += ["owo kill <@408785106942164992>", "owo punch <@408785106942164992>", "owo hug <@408785106942164992>"]
+        
         if last_command in base_cmds and len(base_cmds)>1:
             base_cmds.remove(last_command)
 
@@ -187,6 +183,12 @@ async def startowo(ctx):
             return time.time()
         return start_time
 
+    async def xamm(ctx):
+        if random.random() < 0.08:
+            sus_cmd = random.choice(["owo zoo", "owo cry", "owo dance"])
+            await ctx.send(sus_cmd)
+            await asyncio.sleep(random.uniform(2.0, 4.0))
+
     while running:
         try:
             now = time.time()
@@ -196,12 +198,12 @@ async def startowo(ctx):
                 lasst_check = now
 
             start_time=await auto_rest(start_time)
-            command = n_cmd(farm_count,last_command,now,last_pray_time)
+            await xamm(ctx)
+            command=n_cmd(farm_count)
             #while command==last_command: command=n_cmd(farm_count)
             last_command=command
             async with ctx.channel.typing(): await asyncio.sleep(random.uniform(2.0, 4.0))
             await ctx.send(command)
-            if "owo pray" in command: last_pray_time = time.time()
             if await check_warning(ctx): break
             farm_count+=1
             await asyncio.sleep(max(10,random.betavariate(2.0,5.0)*20))
