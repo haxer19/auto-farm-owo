@@ -1,6 +1,4 @@
-import os
-os.system("pip install -U git+https://github.com/dolfies/discord.py-self.git")
-import json, discord,random,re,time,asyncio
+import os,json, discord,random,re,time,asyncio
 from colorama import Fore, Style, init
 from discord.ext import commands
 
@@ -164,14 +162,16 @@ async def startowo(ctx):
     farm_count=0
     start_time=time.time()
     def n_cmd(farm_count):
-        base_cmds = ["owo hunt","owo battle","owo pray"]
-        if farm_count % 5 == 0:
-            base_cmds.append("owo sell all")
+        base_cmds = ["owo hunt","owo battle"]
+        #if farm_count % 5 == 0:
+        #    base_cmds.append("owo sell all")
         if farm_count % 20 == 0:
             base_cmds.append("owo roll")
-        if random.random() < 0.1:
-            base_cmds += ["owo kill <@408785106942164992>", "owo punch <@408785106942164992>", "owo hug <@408785106942164992>"]
-        
+        if farm_count % 30 == 0:
+            base_cmds.append("owo pray")
+        #if random.random() < 0.1:
+            #base_cmds += ["owo kill <@408785106942164992>", "owo punch <@408785106942164992>", "owo hug <@408785106942164992>"]
+
         if last_command in base_cmds and len(base_cmds)>1:
             base_cmds.remove(last_command)
 
@@ -186,7 +186,7 @@ async def startowo(ctx):
     async def xamm(ctx):
         if random.random() < 0.08:
             sus_cmd = random.choice(["owo zoo", "owo cry", "owo dance"])
-            await ctx.send(sus_cmd)
+            #await ctx.send(sus_cmd)
             await asyncio.sleep(random.uniform(2.0, 4.0))
 
     while running:
