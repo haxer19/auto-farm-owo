@@ -139,16 +139,27 @@ async def check_warning(ctx):
     try:
         messages = [msg async for msg in ctx.channel.history(limit=10)]
         for msg in messages:
-            msg_content = str(msg.content).lower()
+            if msg.author.id != 408785106942164992:
+                continue 
 
-            checkph = [
-                "captcha",
-                "Please complete thi​s wit​hin 1​0 m​inutes o​r i​t m​ay r​esult i​n a​ ba​n!",
-                "P​lease comple​te you​r c​aptcha t​o ver​ify th​at y​ou ar​e huma​n!",
-                "a​re y​ou a​ rea​l hu​man?"
+            if msg.stickers: 
+                continue 
+
+            content = msg.content.lower()
+            
+            if TienThanh.user.mention.lower() not in content:
+                continue 
+
+            warning_phrases = [
+                "are you a real human",
+                "please complete this within",
+                "please complete your captcha",
+                "verify that you are human",
+                "you have been banned for",
+                "macros or botting"
             ]
-            if any(phrase.lower() in msg_content for phrase in checkph):
-                global running
+
+            if any(phrase in content for phrase in warning_phrases):
                 running = False
                 return True
         return False
