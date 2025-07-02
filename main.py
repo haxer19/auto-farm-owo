@@ -134,6 +134,9 @@ async def gem_check(ctx):
     except:
         pass
 
+def emoji(text):
+    return re.sub(r'<a?:\w+:\d+>', '', text)
+
 async def check_warning(ctx):
     global running
     try:
@@ -142,13 +145,13 @@ async def check_warning(ctx):
             if msg.author.id != 408785106942164992:
                 continue 
 
-            if msg.stickers: 
+            if msg.stickers:
                 continue 
 
-            content = msg.content.lower()
-            
-            if TienThanh.user.mention.lower() not in content:
-                continue 
+            if TienThanh.user.mention not in msg.content:
+                continue  
+                
+            cemoji = emoji(msg.content).lower()
 
             warning_phrases = [
                 "are you a real human",
@@ -159,9 +162,10 @@ async def check_warning(ctx):
                 "macros or botting"
             ]
 
-            if any(phrase in content for phrase in warning_phrases):
+            if any(phrase in cemoji for phrase in warning_phrases):
                 running = False
                 return True
+
         return False
     except Exception:
         return False
