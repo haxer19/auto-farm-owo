@@ -64,7 +64,7 @@ async def on_ready():
 {Fore.LIGHTRED_EX}{Style.BRIGHT}>> Banner Color [ {Style.RESET_ALL}{Tiến_Thành['banner_color']}{Fore.LIGHTRED_EX}{Style.BRIGHT} ]
 {Fore.LIGHTRED_EX}{Style.BRIGHT}>> Prefix [ {Style.RESET_ALL}{_prefix_}{Fore.LIGHTRED_EX}{Style.BRIGHT} ]
 {Fore.LIGHTRED_EX}{Style.BRIGHT}>> Có [ {Style.RESET_ALL}{len(TienThanh.guilds)}{Fore.LIGHTRED_EX}{Style.BRIGHT} ] máy chủ
-{Fore.LIGHTCYAN_EX}{Style.BRIGHT}═════════════════════════
+{Fore.LIGHTCYAN_EX}{Style.BRIGHT}═════════════════════════{Style.RESET_ALL}
 """
     print(menu)
 
@@ -131,8 +131,8 @@ async def gem_check(ctx):
                         await ctx.send(use_command)
                         await asyncio.sleep(3)
                     break
-    except:
-        pass
+    except Exception as e:
+        print(f"[ERROR] {e}")
 
 def emoji(text):
     return re.sub(r'<a?:\w+:\d+>|[\U00010000-\U0010ffff]', '', text)
@@ -142,16 +142,16 @@ async def check_warning(ctx):
     try:
         messages = [msg async for msg in ctx.channel.history(limit=10)]
         for msg in messages:
-            if msg.author.id != 408785106942164992:
-                continue 
+            if msg.author.id != 408785106942164992:  
+                continue
 
             if msg.stickers:
-                continue 
+                continue
 
-            if TienThanh.user.mention not in msg.content:
-                continue  
-                
-            cemoji = emoji(msg.content).lower()
+            if TienThanh.user not in msg.mentions:
+                continue
+
+            clean_content = emoji(msg.content).lower()
 
             warning_phrases = [
                 "are you a real human",
@@ -162,73 +162,67 @@ async def check_warning(ctx):
                 "macros or botting"
             ]
 
-            if any(phrase in cemoji for phrase in warning_phrases):
+            if any(phrase in clean_content for phrase in warning_phrases):
                 running = False
+                print("[⚠️] Cảnh báo từ OwO Bot được phát hiện!")
                 return True
 
         return False
-    except Exception:
+    except Exception as e:
+        print(f"[ERROR] Lỗi khi kiểm tra cảnh báo: {e}")
         return False
 
 @TienThanh.command(name="startowo", description="bắt đầu farm")
 async def startowo(ctx):
     await ctx.message.delete()
-    global running,lasst_check
-    running=True
-    lasst_check =time.time()
-    last_command=None
-    farm_count=0
-    start_time=time.time()
-    def n_cmd(farm_count):
-        base_cmds = ["owo hunt","owo battle"]
-        #if farm_count % 5 == 0:
-        #    base_cmds.append("owo sell all")
-        if farm_count % 20 == 0:
-            base_cmds.append("owo roll")
-        if farm_count % 30 == 0:
-            base_cmds.append("owo pray")
-        #if random.random() < 0.1:
-            #base_cmds += ["owo kill <@408785106942164992>", "owo punch <@408785106942164992>", "owo hug <@408785106942164992>"]
+    global running, lasst_check
+    running = True
+    lasst_check = time.time()
+    last_command = None
+    farm_count = 0
+    start_time = time.time()
 
-        if last_command in base_cmds and len(base_cmds)>1:
-            base_cmds.remove(last_command)
-
-        return random.choice(base_cmds)
-
-    async def auto_rest(start_time):
-        if time.time() - start_time >= 600: 
-            await asyncio.sleep(random.uniform(290, 320))
-            return time.time()
-        return start_time
-
-    async def xamm(ctx):
-        if random.random() < 0.08:
-            sus_cmd = random.choice(["owo zoo", "owo cry", "owo dance"])
-            #await ctx.send(sus_cmd)
-            await asyncio.sleep(random.uniform(2.0, 4.0))
+    def n_cmd(farm_count, last_command):
+        cmds = ["owo hunt", "owo battle"]
+        if farm_count % 20 == 0: cmds.append("owo roll")
+        if farm_count % 30 == 0: cmds.append("owo pray")
+        if last_command in cmds and len(cmds) > 1:
+            cmds.remove(last_command)
+        return random.choice(cmds)
 
     while running:
         try:
             if await check_warning(ctx):
-                running = False
+                print("[⚠️] Dừng vì bị cảnh báo")
                 break
-                
+
             now = time.time()
             if now - lasst_check > 480:
                 await gem_check(ctx)
                 lasst_check = now
 
-            start_time=await auto_rest(start_time)
-            await xamm(ctx)
-            command=n_cmd(farm_count)
-            #while command==last_command: command=n_cmd(farm_count)
-            last_command=command
-            async with ctx.channel.typing(): await asyncio.sleep(random.uniform(2.0, 4.0))
+            if time.time() - start_time >= 600:
+                print("[💤] Nghỉ 5 phút tránh spam")
+                await asyncio.sleep(random.uniform(290, 320))
+                start_time = time.time()
+
+            if random.random() < 0.08:
+                await ctx.send(random.choice(["owo zoo", "owo cry", "owo dance"]))
+                await asyncio.sleep(random.uniform(2.0, 4.0))
+
+            command = n_cmd(farm_count, last_command)
+            last_command = command
+
+            async with ctx.channel.typing():
+                await asyncio.sleep(random.uniform(2.0, 4.0))
+
             await ctx.send(command)
-            farm_count+=1
-            await asyncio.sleep(random.uniform(12, 15)) 
-        except:
-            pass
+            print(f"[+] Sent: {command}")
+            farm_count += 1
+
+            await asyncio.sleep(random.uniform(12, 15))
+        except Exception as e:
+            print(f"[ERROR] {e}")
 
 @TienThanh.command(name="stopowo", description="dừng farm") 
 async def stopowo(ctx):
