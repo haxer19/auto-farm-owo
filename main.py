@@ -216,13 +216,13 @@ async def startowo(ctx):
                 lasst_check = now
 
             start_time=await auto_rest(start_time)
+            if await check_warning(ctx): break
             await xamm(ctx)
             command=n_cmd(farm_count)
             #while command==last_command: command=n_cmd(farm_count)
             last_command=command
             async with ctx.channel.typing(): await asyncio.sleep(random.uniform(2.0, 4.0))
             await ctx.send(command)
-            if await check_warning(ctx): break
             farm_count+=1
             await asyncio.sleep(max(10,random.betavariate(2.0,5.0)*20))
         except:
