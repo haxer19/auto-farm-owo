@@ -134,6 +134,28 @@ async def gem_check(ctx):
     except Exception as e:
         print(f"[ERROR] {e}")
 
+async def lb_wc(ctx):
+    await ctx.send("owo inventory")
+    await asyncio.sleep(3)  
+
+    try:
+        messages = [msg async for msg in ctx.channel.history(limit=2)]
+        for msg in messages:
+            if msg.author.id == 408785106942164992:
+                content = msg.content.lower()
+                if "lootbox" in content or "weapon crate" in content:
+                    if ":box:" in content:
+                        await ctx.send("owo lootbox all")
+                        print("[>>] Đã sử dụng lootbox")
+                        await asyncio.sleep(random.uniform(2.0, 3.5))
+                    if ":crate:" in content:
+                        await ctx.send("owo weaponcrate all")
+                        print("[>>] Đã sử dụng weaponcrate")
+                        await asyncio.sleep(random.uniform(2.0, 3.5))
+                break
+    except Exception as e:
+        print(f"[ERROR - Loot/Crate]: {e}")
+
 def emoji(text):
     return re.sub(r'<a?:\w+:\d+>|[\U00010000-\U0010ffff]', '', text)
 
@@ -198,6 +220,7 @@ async def startowo(ctx):
 
             now = time.time()
             if now - lasst_check > 480:
+                await lb_wc(ctx)
                 await gem_check(ctx)
                 lasst_check = now
 
