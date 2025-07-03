@@ -135,7 +135,7 @@ async def gem_check(ctx):
         pass
 
 def emoji(text):
-    return re.sub(r'<a?:\w+:\d+>', '', text)
+    return re.sub(r'<a?:\w+:\d+>|[\U00010000-\U0010ffff]', '', text)
 
 async def check_warning(ctx):
     global running
@@ -209,14 +209,16 @@ async def startowo(ctx):
 
     while running:
         try:
+            if await check_warning(ctx):
+                running = False
+                break
+                
             now = time.time()
             if now - lasst_check > 480:
-                if await check_warning(ctx): break
                 await gem_check(ctx)
                 lasst_check = now
 
             start_time=await auto_rest(start_time)
-            if await check_warning(ctx): break
             await xamm(ctx)
             command=n_cmd(farm_count)
             #while command==last_command: command=n_cmd(farm_count)
@@ -224,7 +226,7 @@ async def startowo(ctx):
             async with ctx.channel.typing(): await asyncio.sleep(random.uniform(2.0, 4.0))
             await ctx.send(command)
             farm_count+=1
-            await asyncio.sleep(max(10,random.betavariate(2.0,5.0)*20))
+            await asyncio.sleep(random.uniform(12, 15)) 
         except:
             pass
 
