@@ -1,7 +1,4 @@
-import os
-os.system("pip install -U git+https://github.com/dolfies/discord.py-self.git")
-os.system("pip install colorama")
-import json, discord,random,re,time,asyncio
+import os,json,discord,random,re,time,asyncio
 from colorama import Fore, Style, init
 from discord.ext import commands
 
@@ -203,6 +200,7 @@ async def startowo(ctx):
     last_command = None
     farm_count = 0
     start_time = time.time()
+    bcc = time.time()
 
     def n_cmd(farm_count, last_command):
         cmds = ["owo hunt", "owo battle"]
@@ -220,10 +218,13 @@ async def startowo(ctx):
 
             now = time.time()
             if now - lasst_check > 480:
-                await lb_wc(ctx)
                 await gem_check(ctx)
                 lasst_check = now
 
+            if now - bcc > 900: 
+                await lb_wc(ctx)
+                bcc = now
+                
             if time.time() - start_time >= 600:
                 print("[💤] Nghỉ 5 phút tránh spam")
                 await asyncio.sleep(random.uniform(290, 320))
