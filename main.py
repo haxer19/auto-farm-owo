@@ -83,7 +83,7 @@ async def help(ctx):
     await ctx.send("COMMAND LIST:\n" + "\n".join(cmds))
 
 running=False
-lasst_check=0
+l_check=0
 gem_used=0
 
 async def parse_gems(inventory_message):
@@ -194,13 +194,12 @@ async def check_warning(ctx):
 @TienThanh.command(name="startowo", description="bắt đầu farm")
 async def startowo(ctx):
     await ctx.message.delete()
-    global running, lasst_check
+    global running, l_check
     running = True
-    lasst_check = time.time()
+    l_check = time.time()
     last_command = None
     farm_count = 0
     start_time = time.time()
-    bcc = time.time()
 
     def n_cmd(farm_count, last_command):
         cmds = ["owo hunt", "owo battle"]
@@ -217,13 +216,13 @@ async def startowo(ctx):
                 break
 
             now = time.time()
-            if now - lasst_check > 480:
+            if now - l_check > 480:
                 await gem_check(ctx)
-                lasst_check = now
-
-            if now - bcc > 900: 
+                l_check = now
+           
+            if now - l_check > 600: 
                 await lb_wc(ctx)
-                bcc = now
+                l_check = now
                 
             if time.time() - start_time >= 600:
                 print("[💤] Nghỉ 5 phút tránh spam")
