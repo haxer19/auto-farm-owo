@@ -1,4 +1,7 @@
-import os,json,discord,random,re,time,asyncio
+import os
+os.system("pip install -U git+https://github.com/dolfies/discord.py-self.git")
+os.system("pip install colorama")
+import json,discord,random,re,time,asyncio
 from colorama import Fore, Style, init
 from discord.ext import commands
 
@@ -152,40 +155,26 @@ async def lb_wc(ctx):
                 break
     except Exception as e:
         print(f"[ERROR - Loot/Crate]: {e}")
-
-def emoji(text):
-    return re.sub(r'<a?:\w+:\d+>|[\U00010000-\U0010ffff]', '', text)
-
+     
 async def check_warning(ctx):
     global running
     try:
         messages = [msg async for msg in ctx.channel.history(limit=10)]
         for msg in messages:
-            if msg.author.id != 408785106942164992:  
-                continue
-
-            if msg.stickers:
-                continue
-
-            if TienThanh.user not in msg.mentions:
-                continue
-
-            clean_content = emoji(msg.content).lower()
-
-            warning_phrases = [
-                "are you a real human",
-                "please complete this within",
-                "please complete your captcha",
-                "verify that you are human",
-                "you have been banned for",
-                "macros or botting"
+            msg_content = str(msg.content).lower()
+      
+            checkph = [
+                "captcha",
+                "Please complete thi​s wit​hin 1​0 m​inutes o​r i​t m​ay r​esult i​n a​ ba​n!",
+                "P​lease comple​te you​r c​aptcha t​o ver​ify th​at y​ou ar​e huma​n!",
+                "a​re y​ou a​ rea​l hu​man?"
             ]
 
-            if any(phrase in clean_content for phrase in warning_phrases):
+            if any(phrase.lower() in msg_content for phrase in checkph):
+                global running
                 running = False
                 print("[⚠️] Cảnh báo từ OwO Bot được phát hiện!")
                 return True
-
         return False
     except Exception as e:
         print(f"[ERROR] Lỗi khi kiểm tra cảnh báo: {e}")
@@ -211,7 +200,7 @@ async def startowo(ctx):
 
     while running:
         try:
-            if await check_warning(ctx):
+            if await check_warning(ctx) or not running:
                 print("[⚠️] Dừng vì bị cảnh báo")
                 break
 
