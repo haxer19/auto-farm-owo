@@ -139,22 +139,22 @@ async def lb_wc(ctx):
     await asyncio.sleep(3)
 
     try:
-        messages = [msg async for msg in ctx.channel.history(limit=2)]
+        messages = [msg async for msg in ctx.channel.history(limit=5)]
         for msg in messages:
             if msg.author.id == 408785106942164992:
                 content = msg.content
+                hbox = re.search(r'<:box:\d+>', content)
+                hcrate = re.search(r'<:crate:\d+>', content)
 
-                has_box =re.search(r'<a?:box:\d+>', content)
-                has_crate =re.search(r'<a?:crate:\d+>', content)
-
-                if has_box:
+                if hbox:
                     await ctx.send("owo lootbox all")
                     await asyncio.sleep(random.uniform(2.0, 3.5))
+                    break 
 
-                if has_crate:
+                elif hcrate:
                     await ctx.send("owo weaponcrate all")
                     await asyncio.sleep(random.uniform(2.0, 3.5))
-                break
+                    break
     except Exception as e:
         print(f"[Loot/Crate]: {e}")
    
@@ -216,7 +216,7 @@ async def startowo(ctx):
                 l_check = now
                 
             if time.time() - start_time >= 600:
-                print("[💤] Nghỉ 5 phút tránh spam")
+                #print("[💤] Nghỉ 5 phút tránh spam")
                 await asyncio.sleep(random.uniform(290, 320))
                 start_time = time.time()
 
@@ -243,5 +243,5 @@ async def stopowo(ctx):
     await ctx.message.delete()
     global running  
     running=False
-
+ 
 TienThanh.run(_token_)
