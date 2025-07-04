@@ -148,12 +148,9 @@ async def lb_wc(ctx):
 
                 if hbox:
                     await ctx.send("owo lootbox all")
-                    await asyncio.sleep(random.uniform(2.0, 3.5))
                     break 
-
                 elif hcrate:
                     await ctx.send("owo weaponcrate all")
-                    await asyncio.sleep(random.uniform(2.0, 3.5))
                     break
     except Exception as e:
         print(f"[Loot/Crate]: {e}")
@@ -188,6 +185,7 @@ async def startowo(ctx):
     global running, l_check
     running = True
     l_check = time.time()
+    lb_check = time.time()
     last_command = None
     farm_count = 0
     start_time = time.time()
@@ -211,9 +209,9 @@ async def startowo(ctx):
                 await gem_check(ctx)
                 l_check = now
            
-            if now - l_check > 600: 
+            if now - lb_check > 580:
                 await lb_wc(ctx)
-                l_check = now
+                lb_check = now
                 
             if time.time() - start_time >= 600:
                 #print("[💤] Nghỉ 5 phút tránh spam")
@@ -243,5 +241,5 @@ async def stopowo(ctx):
     await ctx.message.delete()
     global running  
     running=False
- 
+
 TienThanh.run(_token_)
