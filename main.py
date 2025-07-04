@@ -162,23 +162,23 @@ async def check_warning(ctx):
     try:
         messages = [msg async for msg in ctx.channel.history(limit=10)]
         for msg in messages:
-            msg_content = str(msg.content).lower()
-      
-            checkph = [
-                "captcha",
-                "Please complete thi​s wit​hin 1​0 m​inutes o​r i​t m​ay r​esult i​n a​ ba​n!",
-                "P​lease comple​te you​r c​aptcha t​o ver​ify th​at y​ou ar​e huma​n!",
-                "a​re y​ou a​ rea​l hu​man?"
+            if msg.author.id != 408785106942164992:
+                continue
+
+            raw = msg.content
+            clean_msg = re.sub(r'[\u200b\s]+', '', raw.lower())
+
+            key_phrases = [
+                "areyouarealhuman?pleaseusethelinkbelowsoicancheck!",
+                "pleasecompletethiswithin10minutesoritmayresultinaban"
             ]
 
-            if any(phrase.lower() in msg_content for phrase in checkph):
-                global running
+            if any(phrase in clean_msg for phrase in key_phrases):
                 running = False
-                print("[⚠️] Cảnh báo từ OwO Bot được phát hiện!")
                 return True
         return False
     except Exception as e:
-        print(f"[ERROR - Warning]: {e}")
+        print(f"[ERROR - Warning Detection]: {e}")
         return False
 
 @TienThanh.command(name="startowo", description="bắt đầu farm")
