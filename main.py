@@ -136,26 +136,28 @@ async def gem_check(ctx):
 
 async def lb_wc(ctx):
     await ctx.send("owo inventory")
-    await asyncio.sleep(3)  
+    await asyncio.sleep(3)
 
     try:
         messages = [msg async for msg in ctx.channel.history(limit=2)]
         for msg in messages:
             if msg.author.id == 408785106942164992:
-                content = msg.content.lower()
-                if "lootbox" in content or "weapon crate" in content:
-                    if ":box:" in content:
-                        await ctx.send("owo lootbox all")
-                        print("[>>] Đã sử dụng lootbox")
-                        await asyncio.sleep(random.uniform(2.0, 3.5))
-                    if ":crate:" in content:
-                        await ctx.send("owo weaponcrate all")
-                        print("[>>] Đã sử dụng weaponcrate")
-                        await asyncio.sleep(random.uniform(2.0, 3.5))
+                content = msg.content
+
+                has_box =re.search(r'<a?:box:\d+>', content)
+                has_crate =re.search(r'<a?:crate:\d+>', content)
+
+                if has_box:
+                    await ctx.send("owo lootbox all")
+                    await asyncio.sleep(random.uniform(2.0, 3.5))
+
+                if has_crate:
+                    await ctx.send("owo weaponcrate all")
+                    await asyncio.sleep(random.uniform(2.0, 3.5))
                 break
     except Exception as e:
-        print(f"[ERROR - Loot/Crate]: {e}")
-     
+        print(f"[Loot/Crate]: {e}")
+   
 async def check_warning(ctx):
     global running
     try:
@@ -177,7 +179,7 @@ async def check_warning(ctx):
                 return True
         return False
     except Exception as e:
-        print(f"[ERROR] Lỗi khi kiểm tra cảnh báo: {e}")
+        print(f"[ERROR - Warning]: {e}")
         return False
 
 @TienThanh.command(name="startowo", description="bắt đầu farm")
@@ -229,7 +231,7 @@ async def startowo(ctx):
                 await asyncio.sleep(random.uniform(2.0, 4.0))
 
             await ctx.send(command)
-            print(f"[+] Sent: {command}")
+            #print(f"[+] Sent: {command}")
             farm_count += 1
 
             await asyncio.sleep(random.uniform(12, 15))
