@@ -148,9 +148,11 @@ async def lb_wc(ctx):
 
                 if hbox:
                     await ctx.send("owo lootbox all")
+                    await asyncio.sleep(random.uniform(2.0, 3.0))
                     break 
                 elif hcrate:
                     await ctx.send("owo weaponcrate all")
+                    await asyncio.sleep(random.uniform(2.0, 3.0))
                     break
     except Exception as e:
         print(f"[Loot/Crate]: {e}")
