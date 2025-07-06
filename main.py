@@ -203,7 +203,6 @@ async def startowo(ctx):
     while running:
         try:
             if await check_warning(ctx) or not running:
-                print("[⚠️] Dừng vì bị cảnh báo")
                 break
 
             now = time.time()
