@@ -1,7 +1,4 @@
-import os
-os.system("pip install -U git+https://github.com/dolfies/discord.py-self.git")
-os.system("pip install colorama")
-import json,discord,random,re,time,asyncio
+import os,json,discord,random,re,time,asyncio
 from colorama import Fore, Style, init
 from discord.ext import commands
 
