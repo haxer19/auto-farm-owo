@@ -199,7 +199,7 @@ async def startowo(ctx):
 
             now = time.time()
             if now - l_check > 480:
-                await gem_check(ctx)
+                await inventory_handler(ctx)
                 await asyncio.sleep(3)
                 await lb_wc(ctx)
                 l_check = now
