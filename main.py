@@ -1,4 +1,4 @@
-import os,json,discord,random,re,time,asyncio
+import os,json,discord,random,re,time,asyncio,logging
 from colorama import Fore, Style, init
 from discord.ext import commands
 
@@ -11,6 +11,10 @@ _token_=config["TOKEN"]
 _prefix_=config["PREFIX"]
 TienThanh = commands.Bot(command_prefix=_prefix_, case_insensitive=True, self_bot=True)
 TienThanh.remove_command("help")
+
+logging.getLogger("discord.gateway").setLevel(logging.ERROR)
+logging.getLogger("discord.state").setLevel(logging.ERROR)
+logging.getLogger("discord").setLevel(logging.ERROR)
 
 async def getUser(bot, user_id: int, guild=None):
     user = await bot.fetch_user(user_id)
@@ -80,7 +84,7 @@ async def help(ctx):
     for cmd in TienThanh.commands:
         cmds.append(f"{_prefix_}{cmd.name} - {cmd.description}")
 
-    await ctx.send("COMMAND LIST:\n" + "\n".join(cmds))
+    await ctx.send("```COMMAND LIST:\n" + "\n".join(cmds)+"```")
 
 running=False
 l_check=0
@@ -112,48 +116,40 @@ async def parse_gems(inventory_message):
 
     return selected_gems
 
-async def gem_check(ctx):
+async def inventory_handler(ctx):
     global gem_used
-    await ctx.send("owo inventory")
-    await asyncio.sleep(3)  
-    try:
-        latest_messages = [msg async for msg in ctx.channel.history(limit=2)]
-        for message in latest_messages:
-            if message.author.id == 408785106942164992:  
-                if "inventory" in message.content.lower():
-                    gem_numbers = await parse_gems(message.content)
-                    if gem_numbers: 
-                        use_command = "owo use " + " ".join(gem_numbers)
-                        gem_used+=len(gem_numbers)
-                        await ctx.send(use_command)
-                        await asyncio.sleep(3)
-                    break
-    except Exception as e:
-        print(f"[ERROR] {e}")
-
-async def lb_wc(ctx):
     await ctx.send("owo inventory")
     await asyncio.sleep(3)
 
     try:
         messages = [msg async for msg in ctx.channel.history(limit=5)]
         for msg in messages:
-            if msg.author.id == 408785106942164992:
-                content = msg.content
+            if msg.author.id == 408785106942164992: 
+                content = msg.content.lower()
+
+                if "inventory" in content:
+                    gem_numbers = await parse_gems(content)
+                    if gem_numbers:
+                        use_command = "owo use " + " ".join(gem_numbers)
+                        gem_used += len(gem_numbers)
+                        await ctx.send(use_command)
+                        await asyncio.sleep(3)
+
                 hbox = re.search(r'<:box:\d+>', content)
                 hcrate = re.search(r'<:crate:\d+>', content)
 
                 if hbox:
                     await ctx.send("owo lootbox all")
                     await asyncio.sleep(random.uniform(2.0, 3.0))
-                    break 
+                    break
                 elif hcrate:
                     await ctx.send("owo weaponcrate all")
                     await asyncio.sleep(random.uniform(2.0, 3.0))
                     break
+
     except Exception as e:
-        print(f"[Loot/Crate]: {e}")
-   
+        print(f"[Inventory Handler ERROR]: {e}")
+        
 async def check_warning(ctx):
     global running
     try:
@@ -178,13 +174,12 @@ async def check_warning(ctx):
         print(f"[ERROR - Warning Detection]: {e}")
         return False
 
-@TienThanh.command(name="startowo", description="bắt đầu farm")
+@TienThanh.command(name="start", description="bắt đầu farm")
 async def startowo(ctx):
     await ctx.message.delete()
     global running, l_check
     running = True
     l_check = time.time()
-    lb_check = time.time()
     last_command = None
     farm_count = 0
     start_time = time.time()
@@ -205,11 +200,9 @@ async def startowo(ctx):
             now = time.time()
             if now - l_check > 480:
                 await gem_check(ctx)
-                l_check = now
-           
-            if now - lb_check > 580:
+                await asyncio.sleep(3)
                 await lb_wc(ctx)
-                lb_check = now
+                l_check = now
                 
             if time.time() - start_time >= 600:
                 #print("[💤] Nghỉ 5 phút tránh spam")
@@ -234,7 +227,7 @@ async def startowo(ctx):
         except Exception as e:
             print(f"[ERROR] {e}")
 
-@TienThanh.command(name="stopowo", description="dừng farm") 
+@TienThanh.command(name="stop", description="dừng farm") 
 async def stopowo(ctx):
     await ctx.message.delete()
     global running  
