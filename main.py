@@ -200,8 +200,6 @@ async def startowo(ctx):
             now = time.time()
             if now - l_check > 480:
                 await inventory_handler(ctx)
-                await asyncio.sleep(3)
-                await lb_wc(ctx)
                 l_check = now
                 
             if time.time() - start_time >= 600:
