@@ -166,6 +166,9 @@ async def check_warning(ctx):
                 "pleasecompletethiswithin10minutesoritmayresultinaban"
             ]
 
+            if str(TienThanh.user.id) not in raw:
+                continue
+
             if any(phrase in clean_msg for phrase in key_phrases):
                 running = False
                 return True
